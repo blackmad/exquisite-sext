@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <title>Exquisite Sext</title>
+  </head>
+  <body>
+    <div class="jumbotron text-center">
+      <h1>Exquisite Sext</h1>
+    </div>
+
+    <div class="container">
+      <form>
+        <div class="form-group">
+          <!-- <label for="name">Name</label> -->
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            aria-describedby="nameHelp"
+            placeholder="Mx. Fox"
+            value="David"
+          />
+          <small id="nameHelp" class="form-text text-muted"
+            >The name you'll go by in this exquisite sext</small
+          >
+        </div>
+        <div class="form-group">
+          <!-- <label for="initialPrompt">Initial Prompt</label> -->
+          <input
+            type="text"
+            class="form-control"
+            id="initialPrompt"
+            placeholder="Lately, Alex had been feeling very"
+            maxlength="50"
+            aria-describedby="initialPromptHelp"
+            size="50"
+            value="It was strange"
+          />
+          <small id="initialPromptHelp" class="form-text text-muted"
+            >The start of the story. Keep it to a few words.</small
+          >
+        </div>
+        <button type="button" class="btn btn-primary" id="createRoom">
+          Create Room
+        </button>
+      </form>
+    </div>
+  </body>
+
+  <script>
+    $('#createRoom').click(() => {
+      jQuery
+        .post('/api/createStory', {
+          name: $('#name').val(),
+          initialPrompt: $('#initialPrompt').val()
+        })
+        .done(function(data) {
+          console.log('second success', data);
+
+          let existingRooms = localStorage.getItem('rooms');
+          if (!existingRooms) {
+            existingRooms = {};
+          } else {
+            existingRooms = JSON.parse(existingRooms);
+          }
+          existingRooms[data.room.id] = {
+            name: $('#name').val()
+          };
+          localStorage.setItem('rooms', JSON.stringify(existingRooms));
+          window.location = '/room/' + data.room.id;
+        });
+      return true;
+    });
+  </script>
+</html>
