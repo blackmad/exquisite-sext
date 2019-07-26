@@ -11,3 +11,5 @@ python-socketio
 six
 Werkzeug
 tinydb
+markovify
+pygtrie
