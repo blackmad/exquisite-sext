@@ -45,6 +45,7 @@ def addMessage(roomId, name, text):
         'text': text,
         'ts': ts
     }
+    print('trying to write message: %s', messageKey(roomId, ts))
     r.hmset(messageKey(roomId, ts), msg)
 
     room = findRoom(roomId)
@@ -58,8 +59,9 @@ def getStory(roomId):
 
 
 def getMessages(roomId):
-    print(messagePrefixKey(roomId))
-    messages = [m for m in r.hscan_iter(messagePrefixKey(roomId) + '*')]
+    print('scanning for %s' % messagePrefixKey(roomId))
+    keys = [e for e in r.scan_iter(messagePrefixKey(roomId) + '*')]
+    messages = [r.hgetall(k) for k in keys]
     print('messages', messages)
     if not messages:
       return []
