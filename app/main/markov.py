@@ -12,6 +12,8 @@ import os.path
 from app.main.markov_utils import POSifiedText, nlp
 import pygtrie as trie
 
+import traceback
+
 model_dir = 'models'
 
 model_files = [os.path.join(model_dir, f) for f in listdir(
@@ -54,15 +56,16 @@ def generate_completions(modelName, currentText, numCompletions):
         print('trying split: %s' % (split,))
         word_count = len(split)
 
-        model = models[modelname]
-        trie = modelTries[modelname]
+        model = models[modelName]
+        modeltrie = modelTries[modelName]
         print('last char: %s' % currentText.strip()[-1])
 
         if word_count > 0 and word_count < model.state_size and currentText.strip()[-1] not in '?!.':
             print('trying to expand ...')
             try:
-              expansions = [key for key in trie.iteritems(split)]
+              expansions = [key for key in modeltrie.iteritems(split)]
             except Exception as e:
+              traceback.print_exc()
               print('failed ...')
               print(e)
               continue

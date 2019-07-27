@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import markovify
 import sys
 import os
@@ -36,7 +37,8 @@ def process_corpusdir(corpusdir):
               if args.pos:
                 model = POSifiedText(f, retain_original=False, state_size=5)
               else:
-                model = markovify.Text(f, retain_original=False, state_size=5)
+                text = f.read().replace(',', '')
+                model = markovify.Text(text, retain_original=False, state_size=5)
               if combined_model:
                   combined_model = markovify.combine(
                       models=[combined_model, model])
