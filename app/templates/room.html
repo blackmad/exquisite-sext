@@ -66,6 +66,22 @@ TODO
         width: 100%;
         height: 1em;
       }
+
+      label.error {
+        display: none;
+      }
+      
+      .has-error label.error {
+        display: block;
+      }
+      
+      .has-error .help-block {
+        display: none;
+      }
+
+      .form-control {
+        color: #4dff4d !important;
+      }
     </style>
   </head>
   <body>
@@ -101,13 +117,14 @@ TODO
           </div>
 
           <div v-if="lastSender != name">
-            <div v-for="(completionWords, completionSection) in completions" v-if="completionWords && completionWords.length > 0">
-              <h3>{{completionSection}}</h3>
+            
+            <div v-for="completionSection in completions"  v-if="completionSection.words.length > 0">
+              <h3>{{completionSection.name}}</h3>
               <button
                 type="button"
                 class="btn btn-primary"
                 @click.prevent="sendWord(word)"
-                v-for="word in completionWords"
+                v-for="word in completionSection.words"
               >{{word}}</button>
             </div>
           
@@ -124,18 +141,22 @@ TODO
 
         <div v-if="!name">
           <form>
-            <div class="form-group">
+            <div class="form-group" :class="{
+              'has-error': !!nameError
+            }">
               <input
                 type="text"
                 class="form-control"
                 id="name"
                 aria-describedby="nameHelp"
-                placeholder="Mx. Fox"
-                value="Alex"
+                placeholder="Mx. Wolf"
+                value="Mx. Wolf"
               />
-              <small id="nameHelp" class="form-text text-muted"
-                >The name you'll go by in this exquisite sext</small
+              <span class="help-block" id="nameHelp" 
+                >The name you'll go by in this exquisite sext</span
               >
+              <label class="control-label error" for="name">{{nameError}}</label>
+
             </div>
             <button
               type="button"
@@ -198,18 +219,24 @@ TODO
       data: {
         name: initialName,
         messages: messageArray,
-        completions: completions,
+        completions: completions.completions,
         room,
         lastSender,
-        otherUser
+        otherUser,
+        nameError: false
       },
       methods: {
         setName: function(event) {
-          if ($('#name').val() == room.creator) {
-            alert('hey, choose a different name from the creator of the room');
+          const name = $('#name').val()
+          if (name == room.creator) {
+            app.nameError = 'Hey, choose a different name from the creator of the room';
             return true;
           }
-          this.name = $('#name').val();
+          if (!name) {
+            app.nameError = 'Name is required'
+            return true;
+          }
+          this.name = name;
 
           let existingRooms = localStorage.getItem('rooms');
           if (!existingRooms) {

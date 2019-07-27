@@ -9,13 +9,36 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <link
+    <!-- <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
+    /> -->
+    <link
+    rel="stylesheet"
+    href="/static/hacker.css"
     />
+  
     <title>Exquisite Sext</title>
+
+    <style>
+      label.error {
+        display: none;
+      }
+      
+      .has-error label.error {
+        display: block;
+      }
+
+      .has-error .help-block {
+        display: none;
+      }
+
+      .form-control {
+        color: #4dff4d !important;
+      }
+    </style>
   </head>
   <body>
     <div class="jumbotron text-center">
@@ -24,7 +47,7 @@
 
     <div class="container">
       <form>
-        <div class="form-group">
+        <div class="form-group nameGroup">
           <!-- <label for="name">Name</label> -->
           <input
             type="text"
@@ -32,13 +55,13 @@
             id="name"
             aria-describedby="nameHelp"
             placeholder="Mx. Fox"
-            value="David"
           />
-          <small id="nameHelp" class="form-text text-muted"
-            >The name you'll go by in this exquisite sext</small
+          <span class="help-block" id="nameHelp" 
+            >The name you'll go by in this exquisite sext</span
           >
+          <label class="control-label error" for="name">Name is required</label>
         </div>
-        <div class="form-group">
+        <div class="form-group initialPromptGroup">
           <!-- <label for="initialPrompt">Initial Prompt</label> -->
           <input
             type="text"
@@ -48,11 +71,12 @@
             maxlength="50"
             aria-describedby="initialPromptHelp"
             size="50"
-            value="It was strange"
+            value="{{prompt}}"
           />
-          <small id="initialPromptHelp" class="form-text text-muted"
-            >The start of the story. Keep it to a few words.</small
+          <span class="help-block" id="initialPromptHelp"
+            >The start of the story. Keep it to a few words. Here's a suggstion.</span
           >
+          <label class="control-label error" for="initialPrompt">Initial prompt is required</label>
         </div>
         <button type="button" class="btn btn-primary" id="createRoom">
           Create Room
@@ -61,12 +85,29 @@
     </div>
   </body>
 
+  {% raw %}
+
   <script>
     $('#createRoom').click(() => {
+      name = $('#name').val();
+      initialPrompt = $('#initialPrompt').val();
+
+      if (!name) {
+        $('.nameGroup').addClass('has-error');
+      }
+
+      if (!initialPrompt) {
+        $('.initialPromptGroup').addClass('has-error');
+      }
+
+      if (!name || !initialPrompt) {
+        return;
+      }
+
       jQuery
         .post('/api/createStory', {
-          name: $('#name').val(),
-          initialPrompt: $('#initialPrompt').val()
+          name: name,
+          initialPrompt: initialPrompt
         })
         .done(function(data) {
           console.log('second success', data);
@@ -86,4 +127,5 @@
       return true;
     });
   </script>
+  {% endraw %}
 </html>

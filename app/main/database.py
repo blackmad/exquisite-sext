@@ -6,15 +6,18 @@ import time
 
 import os
 import redis
+import pickle
 
 r = redis.from_url(os.environ.get("REDIS_URL"), charset="utf-8", decode_responses=True)
 
 def roomKey(roomId):
     return 'room:' + roomId
 
-
-def messageKey(roomId):
+def messagePrefixKey(roomId):
     return 'messages:' + roomId
+
+def messageKey(roomId, ts):
+    return 'messages:' + roomId + ':' + str(ts)
 
 def sidKey(sid):
     return 'sid:' + sid
@@ -35,13 +38,14 @@ def setParticipant(roomId, room, name, sid):
 
 
 def addMessage(roomId, name, text):
+    ts = time.time()
     msg = {
         'roomId': roomId,
         'name': name,
         'text': text,
-        'ts': time.time()
+        'ts': ts
     }
-    r.lpush(messageKey(roomId), msg)
+    r.hmset(messageKey(roomId, ts), msg)
 
     room = findRoom(roomId)
     story = room['story'] + ' ' + text
@@ -54,9 +58,12 @@ def getStory(roomId):
 
 
 def getMessages(roomId):
-    messages = r.get(messageKey(roomId))
+    print(messagePrefixKey(roomId))
+    messages = [m for m in r.hscan_iter(messagePrefixKey(roomId) + '*')]
+    print('messages', messages)
+    if not messages:
+      return []
     return messages
-
 
 def createRoom(creator, initialPrompt):
     newId = str(uuid.uuid1())
@@ -91,11 +98,11 @@ def setOnline(roomId, room, name, sid):
 
 def setOffline(sid, cb):
     print('disconnecting sid %s' % sid)
-    presence = r.getall(sidKey(sid))
+    presence = r.hgetall(sidKey(sid))
     if not presence:
       return
     
     if presence['role'] == 'participant':
-      r.hset(roomKey(presence['roomId']), 'participantSid', None)
+      r.hset(roomKey(presence['roomId']), 'participantSid', '')
     else:
-      r.hset(roomKey(presence['roomId']), 'creatorSid', None)
+      r.hset(roomKey(presence['roomId']), 'creatorSid', '')

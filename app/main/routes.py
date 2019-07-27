@@ -4,7 +4,7 @@ from . import main
 from flask import jsonify
 from . import database
 from app.main.room_utils import make_room_completions
-
+from app.main import markov
 
 @main.route('/static/<path:path>')
 def send_static(path):
@@ -13,7 +13,8 @@ def send_static(path):
 
 @main.route('/')
 def send_index():
-    return send_from_directory('static', 'index.html')
+    prompt = ' '.join(markov.models['bdsm'].make_sentence().split(' ')[:5])
+    return render_template('index.html', prompt=prompt)
 
 
 @main.route('/room/<id>')
@@ -21,7 +22,7 @@ def send_room(id):
     room = database.findRoom(id)
     print(room)
     messages = database.getMessages(id)
-    completions = make_room_completions(id)
+    completions = {'completions': make_room_completions(id)}
 
     print(messages)
 
