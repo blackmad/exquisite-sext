@@ -11,7 +11,7 @@ def make_room_completions(roomId):
     if newStory.strip()[-1] in '?!.':
         nextWords = [n.capitalize() for n in nextWords]
 
-    punctuation = ['.', ',', '?', '!', '-']
+    punctuation = ['.', ',', '?', '!', '-', ':newline:']
     savedNouns = list(set([word.orth_ for word in nlp(newStory) if word.pos_ == 'PROPN']))
     completions = {
         'Next Words': nextWords,
