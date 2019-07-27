@@ -16,3 +16,4 @@ pygtrie
 redis
 gunicorn
 eventlet
+uwsgi

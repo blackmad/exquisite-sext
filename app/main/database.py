@@ -7,7 +7,7 @@ import time
 import os
 import redis
 
-r = redis.from_url(os.environ.get("REDIS_URL"))
+r = redis.from_url(os.environ.get("REDIS_URL"), charset="utf-8", decode_responses=True)
 
 def roomKey(roomId):
     return 'room:' + roomId
@@ -21,7 +21,8 @@ def sidKey(sid):
 
 
 def findRoom(roomId):
-    room = r.get(roomKey(roomId))
+    room = r.hgetall(roomKey(roomId))
+    print(room)
     if not room:
         raise Exception('room %s not found' % roomId)
 
@@ -75,14 +76,14 @@ def setOnline(roomId, room, name, sid):
     if name == room['creator']:
         print('setting creatorSid %s' % sid)
         r.hset(roomKey(roomId), 'creatorSid', sid)
-        r.set(sidKey(sid), {
+        r.hmset(sidKey(sid), {
           'roomId': roomId,
           'role': 'creator'
         })
     else:
         print('setting participantSid %s' % sid)
         r.hset(roomKey(roomId), 'participantSid', sid)
-        r.set(sidKey(sid), {
+        r.hmset(sidKey(sid), {
           'roomId': roomId,
           'role': 'participant'
         })
@@ -90,7 +91,7 @@ def setOnline(roomId, room, name, sid):
 
 def setOffline(sid, cb):
     print('disconnecting sid %s' % sid)
-    presence = r.get(sidKey(sid))
+    presence = r.getall(sidKey(sid))
     if not presence:
       return
     
