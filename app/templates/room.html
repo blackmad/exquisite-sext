@@ -95,7 +95,9 @@ TODO
             <div class="alert alert-dismissible alert-success">
 
             <div class="storyArea">
-              <h3 style="display:inline">{{room.initialPrompt}}</h3>
+              <h3 style="display:inline" :class="{
+                'text-primary': name == room.creator
+              }">{{room.initialPrompt}}</h3>
               <template v-for="message in messages"> 
                   <span v-if="message.text != ':newline:' && message.text != '.' && message.text != ','" class="space"><pre> </pre></span>
                   <div class="newline" v-if="message.text == ':newline:'"></div>
