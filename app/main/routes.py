@@ -4,7 +4,10 @@ from . import main
 from flask import jsonify
 from . import database
 from app.main.room_utils import make_room_completions
+
+print('loading markov ...')
 from app.main import markov
+print('done loading!!!!')
 
 @main.route('/static/<path:path>')
 def send_static(path):

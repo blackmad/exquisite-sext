@@ -14,5 +14,6 @@ def create_app(debug=False):
     app.register_blueprint(main_blueprint)
 
     socketio.init_app(app)
+    print('app ready to serve')
     return app
 

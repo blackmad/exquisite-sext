@@ -12,6 +12,7 @@ import os.path
 from app.main.markov_utils import POSifiedText, nlp
 import pygtrie as trie
 
+
 import traceback
 
 model_dir = 'models'
@@ -22,14 +23,20 @@ model_files = [os.path.join(model_dir, f) for f in listdir(
 models = {}
 modelTries = {}
 
+print('about to load models')
 for model_file in model_files:
     modelname = os.path.basename(model_file).split('.')[0]
     # models[modelname] = markovify.Text.from_json(open(model_file).read())
+    print('loading %s' % model_file)
     if '-pos' in model_file:
         models[modelname] = POSifiedText.from_json(open(model_file).read())
     else:
         models[modelname] = markovify.Text.from_json(open(model_file).read())
+    print('building trie')
     modelTries[modelname] = trie.Trie().fromkeys(models[modelname].chain.model.keys())
+    print('done with that model')
+
+print('done with all models')
 
 
 def generate_completions(modelName, currentText, numCompletions):
