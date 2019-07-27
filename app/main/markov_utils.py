@@ -2,7 +2,8 @@ import markovify
 import re
 import spacy
 
-nlp = spacy.load("en")
+# nlp = spacy.load("en")
+nlp = None
 
 class POSifiedText(markovify.Text):
     def word_split(self, sentence):
