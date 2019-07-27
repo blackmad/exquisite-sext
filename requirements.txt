@@ -14,3 +14,4 @@ tinydb
 markovify
 pygtrie
 redis
+gunicorn

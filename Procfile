@@ -1,1 +1,1 @@
-web gunicorn chat
+web gunicorn chat --timeout 300
