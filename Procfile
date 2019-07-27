@@ -1,1 +1,1 @@
-web gunicorn chat --timeout 300
+ gunicorn --worker-class eventlet -w 1 --timeout 300 chat:app
