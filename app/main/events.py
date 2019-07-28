@@ -20,6 +20,7 @@ def joined(message):
     print('%s joined' % name)
     if name != room['creator'] and ('participant' not in room or not room['participant']):
         print('yay they are our participant')
+        database.setParticipant(roomId=roomId, room=room, name=name, sid=sid)
         database.setOnline(roomId=roomId, room=room, name=name, sid=sid)
         emit('setParticipant', {'name': name}, room=roomId)
         emit('status', {'msg': name + ' has entered the room.', 'room': room}, room=roomId)
