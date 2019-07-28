@@ -85,6 +85,7 @@ def setOnline(roomId, room, name, sid):
     print('setting online %s in %s' % (name, room))
     if name == room['creator']:
         print('setting creatorSid %s' % sid)
+        room['creatorSid'] = sid
         r.hset(roomKey(roomId), 'creatorSid', sid)
         r.hmset(sidKey(sid), {
           'roomId': roomId,
@@ -92,6 +93,7 @@ def setOnline(roomId, room, name, sid):
         })
     else:
         print('setting participantSid %s' % sid)
+        room['participantSid'] = sid
         r.hset(roomKey(roomId), 'participantSid', sid)
         r.hmset(sidKey(sid), {
           'roomId': roomId,

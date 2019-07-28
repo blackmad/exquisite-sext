@@ -22,11 +22,11 @@ def joined(message):
         print('yay they are our participant')
         database.setOnline(roomId=roomId, room=room, name=name, sid=sid)
         emit('setParticipant', {'name': name}, room=roomId)
-        emit('status', {'msg': name + ' has entered the room.'}, room=roomId)
+        emit('status', {'msg': name + ' has entered the room.', 'room': room}, room=roomId)
     else:
         print('so we are going to set them online')
         database.setOnline(roomId=roomId, room=room, name=name, sid=sid)
-        emit('status', {'msg': name + ' has returned.'}, room=roomId)
+        emit('status', {'msg': name + ' has returned.', 'room': room}, room=roomId)
 
     if 'participant' in room and name != room['participant'] and name != room['creator']:
         raise 'Hey, you are not one of the two players in this room'

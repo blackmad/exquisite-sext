@@ -90,7 +90,7 @@ TODO
 
       <div id="vueArea">
         {% raw %}
-        <div v-if="name && otherUser">
+        <div v-if="room.creator && room.participant">
           
             <div class="alert alert-dismissible alert-success">
 
@@ -137,9 +137,7 @@ TODO
         </div>
         <div v-else class="statusArea panel panel-default"><div class="panel-body">
           Waiting for another person to join.
-        </div></div>
-                 
-        
+        </div></div>        
 
         <div v-if="!name">
           <form>
@@ -276,6 +274,9 @@ TODO
         name: app.name,
         roomId: roomId
       });
+      if (app.name != app.room.creator) {
+        app.room.participant = app.name;
+      }
     }
 
     var socket;
