@@ -34,6 +34,7 @@ def findRoom(roomId):
 
 def setParticipant(roomId, room, name, sid):
     r.hset(roomKey(roomId), 'participant', name)
+    room['participant'] = name
     setOnline(roomId, room, name, sid)
 
 
