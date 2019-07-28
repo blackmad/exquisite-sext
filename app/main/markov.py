@@ -46,35 +46,35 @@ def generate_completions(modelName, currentText, numCompletions):
 
     completions = set()
 
-    print('currentText %s' % currentText)
+    # print('currentText %s' % currentText)
     wordSample = currentText.split(' ')[-20:]
     endText = ' '.join(wordSample)
-    print('endText %s' % endText)
+    # print('endText %s' % endText)
     parsedText = tuple(model.word_split(endText))
-    print('wordSample len %s' % len(wordSample))
+    # print('wordSample len %s' % len(wordSample))
     numWordsToTake = min([5, len(wordSample)])
 
     while numWordsToTake >= 0 and len(completions) < numCompletions:
-        print('taking %s' % numWordsToTake)
+        # print('taking %s' % numWordsToTake)
         split = parsedText[-numWordsToTake:]
 
         numWordsToTake -= 1
 
-        print('trying split: %s' % (split,))
+        # print('trying split: %s' % (split,))
         word_count = len(split)
 
         model = models[modelName]
         modeltrie = modelTries[modelName]
-        print('last char: %s' % currentText.strip()[-1])
+        # print('last char: %s' % currentText.strip()[-1])
 
         if word_count > 0 and word_count < model.state_size and currentText.strip()[-1] not in '?!.':
-            print('trying to expand ...')
+            # print('trying to expand ...')
             try:
               expansions = [key for key in modeltrie.iteritems(split)]
             except Exception as e:
               traceback.print_exc()
-              print('failed ...')
-              print(e)
+              # print('failed ...')
+              # print(e)
               continue
 
             # print('expanded to %s' % expansions)
@@ -92,15 +92,15 @@ def generate_completions(modelName, currentText, numCompletions):
         else:
           if currentText[-1] in '?!.':
             split = tuple((BEGIN,) * (model.state_size))
-            print('changed split to %s' % (split,))
+            # print('changed split to %s' % (split,))
 
-          print('split was big enough')
+          # print('split was big enough')
           try:
             newCompletions = set([
               models[modelName].chain.move(split)
               for n in range(numCompletions*3)
             ])
-            print('adding new completions')
+            # print('adding new completions')
             completions = completions.union(newCompletions)
           except Exception as e:
             print('That split did not work %s' % (split,))
@@ -108,7 +108,7 @@ def generate_completions(modelName, currentText, numCompletions):
 
         
 
-    print(len(completions))
+    # print(len(completions))
     completions = list(completions)
     random.shuffle(completions)
     return [model.word_join([w,]) for w in completions[:numCompletions]]

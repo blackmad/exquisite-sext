@@ -134,7 +134,7 @@ TODO
           </div>
           <div v-else class="statusArea panel panel-default"><div class="panel-body">Waiting for {{ otherUser }}</div></div>
         </div>
-        <div v-if="!room.participant" class="statusArea panel panel-default"><div class="panel-body">
+        <div v-if="!room.participant && name == room.creator" class="statusArea panel panel-default"><div class="panel-body">
           Waiting for another person to join.
         </div></div>        
 
