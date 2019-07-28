@@ -198,16 +198,6 @@ TODO
 
     let initialName = null;
     let otherUser = null;
-    console.log(room.creatorSid)
-    console.log(room.participantSid)
-    if (room.participantSid && !room.creatorSid) {
-      console.log(' i know you are the creator')
-      initialName = room.creator;
-    } else if (room.creatorSid && !room.participantSid) {
-      console.log(' i know you are the participant')
-      initialName = room.participant;
-    }
-    
 
     let existingRooms = localStorage.getItem('rooms');
     if (!existingRooms) {
@@ -216,8 +206,20 @@ TODO
       existingRooms = JSON.parse(existingRooms);
     }
 
-    if (existingRooms[roomId] && !initialName) {
+    if (existingRooms[roomId]) {
       initialName = existingRooms[roomId].name;
+    }
+
+    if (!initialName) {
+      console.log(room.creatorSid)
+      console.log(room.participantSid)
+      if (room.participantSid && !room.creatorSid) {
+        console.log(' i know you are the creator')
+        initialName = room.creator;
+      } else if (room.creatorSid && !room.participantSid) {
+        console.log(' i know you are the participant')
+        initialName = room.participant;
+      }
     }
 
     if (initialName == room.creator) {
