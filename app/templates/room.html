@@ -306,6 +306,11 @@ TODO
 
     const socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
     $(document).ready(function() {
+      socket.on('error', function (err) { 
+        console.error("Socket.IO Error"); 
+        console.error(err.stack); // this is changed from your code in last comment
+      });
+
       socket.on('connect', function() {
         console.log('connect')
         console.log(app.name);
