@@ -8,7 +8,7 @@ import os
 import redis
 import pickle
 
-r = redis.from_url(os.environ.get("REDIS_URL"), charset="utf-8", decode_responses=True)
+r = redis.from_url(os.environ.get("REDIS_URL") or 'redis://localhost:6379', charset="utf-8", decode_responses=True)
 
 def roomKey(roomId):
     return 'room:' + roomId
