@@ -262,7 +262,7 @@ TODO
             existingRooms = JSON.parse(existingRooms);
           }
           existingRooms[roomId] = {
-            name: $('#name').val()
+            name: name
           };
           localStorage.setItem('rooms', JSON.stringify(existingRooms));
 
