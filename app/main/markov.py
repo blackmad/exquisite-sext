@@ -77,7 +77,7 @@ def generate_completions(modelName, currentText, numCompletions):
               print(e)
               continue
 
-            print('expanded to %s' % expansions)
+            # print('expanded to %s' % expansions)
             for (expansion, _) in expansions:
               toAdd = None
 
@@ -87,7 +87,7 @@ def generate_completions(modelName, currentText, numCompletions):
                 toAdd = expansion[len(split)]
 
               if toAdd:
-                print('adding %s' % toAdd)
+                # print('adding %s' % toAdd)
                 completions.add(toAdd)
         else:
           if currentText[-1] in '?!.':

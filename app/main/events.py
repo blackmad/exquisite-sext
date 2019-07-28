@@ -5,7 +5,7 @@ from . import database
 import time
 from app.main.room_utils import make_room_completions
 
-@socketio.on('joined', namespace='/chat')
+@socketio.on('joined')
 def joined(message):
     """Sent by clients when they enter a room.
     A status message is broadcast to all people in the room."""
@@ -20,7 +20,9 @@ def joined(message):
     if name != room['creator'] and ('participant' not in room or not room['participant']):
         print('yay they are our participant')
         database.setParticipant(roomId, room, name, sid)
+        print('emitting setParticipant')
         emit('setParticipant', {'name': name}, room=roomId)
+        print('emitting status')
         emit('status', {'msg': name + ' has entered the room.'}, room=roomId)
     else:
         database.setOnline(roomId, room, name, sid)
@@ -32,7 +34,7 @@ def joined(message):
     join_room(roomId)
 
 
-@socketio.on('text', namespace='/chat')
+@socketio.on('text')
 def rcv_text(message):
     """Sent by a client when the user entered a new message.
     The message is sent to all people in the room."""
