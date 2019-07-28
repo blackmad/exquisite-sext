@@ -90,8 +90,7 @@ TODO
 
       <div id="vueArea">
         {% raw %}
-        <div v-if="room.creator && room.participant">
-          
+        <div v-if="room.creator && room.participant && name">
             <div class="alert alert-dismissible alert-success">
 
             <div class="storyArea">
@@ -135,12 +134,20 @@ TODO
           </div>
           <div v-else class="statusArea panel panel-default"><div class="panel-body">Waiting for {{ otherUser }}</div></div>
         </div>
-        <div v-else class="statusArea panel panel-default"><div class="panel-body">
+        <div v-if="!room.participant" class="statusArea panel panel-default"><div class="panel-body">
           Waiting for another person to join.
         </div></div>        
 
         <div v-if="!name">
-          <form>
+          <div v-if="room.creator && room.participant">
+            Who are you?
+            <button name="creator"
+              @click.prevent="setName(room.creator)">{{room.creator}}</button>
+            <button name="participant"
+              @click.prevent="setName(room.participant)">{{room.participant}}</button>
+
+          </div>
+          <form v-else>
             <div class="form-group" :class="{
               'has-error': !!nameError
             }">
@@ -161,7 +168,7 @@ TODO
             <button
               type="button"
               class="btn btn-primary"
-              @click.prevent="setName"
+              @click.prevent="setNameFromInput"
             >
               Start exquisitely sexting
             </button>
@@ -226,7 +233,7 @@ TODO
         nameError: false
       },
       methods: {
-        setName: function(event) {
+        setNameFromInput: function(event) {
           const name = $('#name').val()
           if (name == room.creator) {
             app.nameError = 'Hey, choose a different name from the creator of the room';
@@ -236,6 +243,9 @@ TODO
             app.nameError = 'Name is required'
             return true;
           }
+          this.setName(name);
+        },
+        setName(name) {
           this.name = name;
 
           let existingRooms = localStorage.getItem('rooms');
