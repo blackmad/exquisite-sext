@@ -198,11 +198,16 @@ TODO
 
     let initialName = null;
     let otherUser = null;
+    console.log(room.creatorSid)
+    console.log(room.participantSid)
     if (room.participantSid && !room.creatorSid) {
+      console.log(' i know you are the creator')
       initialName = room.creator;
     } else if (room.creatorSid && !room.participantSid) {
+      console.log(' i know you are the participant')
       initialName = room.participant;
     }
+    
 
     let existingRooms = localStorage.getItem('rooms');
     if (!existingRooms) {
@@ -211,7 +216,7 @@ TODO
       existingRooms = JSON.parse(existingRooms);
     }
 
-    if (existingRooms[roomId]) {
+    if (existingRooms[roomId] && !initialName) {
       initialName = existingRooms[roomId].name;
     }
 
@@ -220,6 +225,8 @@ TODO
     } else if (initialName == room.participant) {
       otherUser = room.creator;
     }
+
+    console.log('found initial name: ', initialName)
 
     const app = new Vue({
       el: '#vueArea',
