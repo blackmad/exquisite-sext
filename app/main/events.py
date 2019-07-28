@@ -5,7 +5,7 @@ from . import database
 import time
 from app.main.room_utils import make_room_completions
 
-@socketio.on('joined')
+@socketio.on('joined', namespace='/chat')
 def joined(message):
     """Sent by clients when they enter a room.
     A status message is broadcast to all people in the room."""
@@ -17,15 +17,15 @@ def joined(message):
     name = message['name']
     room = database.findRoom(roomId)
     print(room)
+    print('%s joined' % name)
     if name != room['creator'] and ('participant' not in room or not room['participant']):
         print('yay they are our participant')
-        database.setParticipant(roomId, room, name, sid)
-        print('emitting setParticipant')
+        database.setOnline(roomId=roomId, room=room, name=name, sid=sid)
         emit('setParticipant', {'name': name}, room=roomId)
-        print('emitting status')
         emit('status', {'msg': name + ' has entered the room.'}, room=roomId)
     else:
-        database.setOnline(roomId, room, name, sid)
+        print('so we are going to set them online')
+        database.setOnline(roomId=roomId, room=room, name=name, sid=sid)
         emit('status', {'msg': name + ' has returned.'}, room=roomId)
 
     if 'participant' in room and name != room['participant'] and name != room['creator']:
@@ -34,7 +34,7 @@ def joined(message):
     join_room(roomId)
 
 
-@socketio.on('text')
+@socketio.on('text', namespace='/chat')
 def rcv_text(message):
     """Sent by a client when the user entered a new message.
     The message is sent to all people in the room."""
@@ -62,7 +62,7 @@ def rcv_text(message):
 #     emit('status', {'msg': name + ' has left the room.'}, room=roomId)
 
 
-@socketio.on('disconnect')
+@socketio.on('disconnect', namespace='/chat')
 def disconnect():
     sid = request.sid
     print('sid disconnected: ' + sid)

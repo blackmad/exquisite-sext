@@ -82,6 +82,7 @@ def createRoom(creator, initialPrompt):
 
 
 def setOnline(roomId, room, name, sid):
+    print('setting online %s in %s' % (name, room))
     if name == room['creator']:
         print('setting creatorSid %s' % sid)
         r.hset(roomKey(roomId), 'creatorSid', sid)
