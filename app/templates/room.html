@@ -266,6 +266,12 @@ TODO
           };
           localStorage.setItem('rooms', JSON.stringify(existingRooms));
 
+          if (name != this.room.creator) {
+            app.otherUser = this.room.creator;
+          } else {
+            app.otherUser = this.room.participant;
+          }
+
           joinRoom();
         },
         sendText: function() {
@@ -323,7 +329,9 @@ TODO
         // $('#chat').scrollBottom($('#chat')[0].scrollHeight);
       });
       socket.on('setParticipant', function(data) {
-        app.otherUser = data.name;
+        if (app.name == app.room.creator) {
+          app.otherUser = data.name;
+        }
       });
     });
 
