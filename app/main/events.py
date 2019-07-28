@@ -43,6 +43,8 @@ def rcv_text(message):
     name = message['name']
     text = message['text']
 
+    console.log('received message: %s' % message)
+
     database.addMessage(roomId=roomId, name=name, text=text)
     completions = make_room_completions(roomId)
 
