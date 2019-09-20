@@ -8,6 +8,7 @@ TODO
 -->
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{room.initialPrompt}} by {{room.creator}}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
@@ -43,11 +44,11 @@ TODO
       }
 
       .textFragment {
-        display: inline-block;
+        display: inline;
       }
 
       .space {
-        display: inline-block;
+        display: inline;
       }
 
       .storyArea h3 {
@@ -82,6 +83,56 @@ TODO
       .form-control {
         color: #4dff4d !important;
       }
+
+      .centerContainer {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn {
+          white-space: normal;
+        }
+
+        .completionButtons {
+          display: flex;
+          flex-wrap: wrap;
+        }
+
+        .completionButtons button {
+          flex-grow: 1;
+          margin: 0.1em;
+        }
+
+@media screen and (max-width: 480px) { 
+  body {
+    padding: 5%;
+  }
+        div, input, button, span, pre {
+          font-size:108%;
+          line-height:125%;
+          /* background-color: blue !important;*/
+        }
+
+        .text-primary,  {
+          font-size: 105%;
+        }
+
+        .nameArea {
+          font-size: 16px;
+        }
+
+        span {
+          display: inline;
+        }
+
+        input {
+          margin-top: 3vh;
+          margin-bottom: 3vh;
+        }
+      }
     </style>
   </head>
   <body>
@@ -94,9 +145,9 @@ TODO
             <div class="alert alert-dismissible alert-success">
 
             <div class="storyArea">
-              <h3 style="display:inline" :class="{
+              <span class="initialPrompt" :class="{
                 'text-primary': name == room.creator
-              }">{{room.initialPrompt}}</h3>
+              }">{{room.initialPrompt}}</span>
               <template v-for="message in messages"> 
                   <span v-if="message.text != ':newline:' && message.text != '.' && message.text != ','" class="space"><pre> </pre></span>
                   <div class="newline" v-if="message.text == ':newline:'"></div>
@@ -121,22 +172,32 @@ TODO
             
             <div v-for="completionSection in completions"  v-if="completionSection.words.length > 0">
               <h3>{{completionSection.name}}</h3>
-              <button
-                type="button"
-                class="btn btn-primary"
-                @click.prevent="sendWord(word)"
-                v-for="word in completionSection.words"
-              >{{word}}</button>
+              <div class="completionButtons">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  @click.prevent="sendWord(word)"
+                  v-for="word in completionSection.words"
+                >{{word}}</button>
+              </div>
             </div>
           
-              Start exquisitely sexting
-            </button>
           </div>
-          <div v-else class="statusArea panel panel-default"><div class="panel-body">Waiting for {{ otherUser }}</div></div>
+          <div v-else class="">
+            <div class="statusArea panel panel-default">
+              <div class="panel-body">
+                Waiting for {{ otherUser }}
+              </div>
+            </div>
+          </div>
         </div>
-        <div v-if="!room.participant && name == room.creator" class="statusArea panel panel-default"><div class="panel-body">
-          Waiting for another person to join.
-        </div></div>        
+        <div v-if="!room.participant && name == room.creator" class="centerContainer">
+          <div class="statusArea panel panel-default">
+            <div class="panel-body">
+              Waiting for another person to join.
+            </div>
+          </div>        
+        </div>
 
         <div v-if="!name">
           <div v-if="room.creator && room.participant">
@@ -151,6 +212,9 @@ TODO
             <div class="form-group" :class="{
               'has-error': !!nameError
             }">
+              {{room.creator}} has invited you to participate in their exquisite sext.<br/><br/>
+             
+              Please enter the name you'd like to use for this.
               <input
                 type="text"
                 class="form-control"
@@ -159,19 +223,18 @@ TODO
                 placeholder="Mx. Wolf"
                 value="Mx. Wolf"
               />
-              <span class="help-block" id="nameHelp" 
+              <!-- <span class="help-block" id="nameHelp" 
                 >The name you'll go by in this exquisite sext</span
-              >
+              > -->
               <label class="control-label error" for="name">{{nameError}}</label>
 
             </div>
-            <button
-              type="button"
+            <span
               class="btn btn-primary"
               @click.prevent="setNameFromInput"
             >
               Start exquisitely sexting
-            </button>
+          </span>
           </form>
         </div>
 
